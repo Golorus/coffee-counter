@@ -1,0 +1,135 @@
+openapi: '3.0.2'
+info:
+  title: 'coffee-api'
+  version: '1.0'
+  description: Das ist eine API zum Erfassen und Auslesen einer Kaffeeliste
+servers:
+  - url: https://coffee.fi-wi.org/api
+    description: "Productive Server"
+  - url: https://coffee.fi-wi.org/api/dev
+    description: "Develop Server"
+paths:
+  /coffees:
+    get:
+      tags: ['coffee']
+      operationId: get-coffees
+      responses:
+        '200':
+          description: OK
+          content: 
+            'application/json':
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Coffee'
+
+    post:
+      tags: ['coffee']
+      operationId: post-coffee
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Coffee'      
+            example:
+              Coffee:
+                id: 1
+                price: 0.15
+                userID: 1
+      responses:
+        '201':
+          description: "Add coffee for user"
+  /purchases:
+    get:
+      tags: [purchases]
+      description: Get all Purchases
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Purchase'
+
+    post:
+      description: Enter new purchase of User
+      responses:
+        '200':
+          description: OK
+
+  /users:
+    get:
+      tags: ['users']
+      description: Get all users
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/User'
+
+    post:
+      tags: ['users']
+      operationId: add-user
+      description: Adds new User to the board
+      responses:
+        '200':
+          description: OK
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    Coffee:
+      type: object
+      properties:
+        id:
+          type: integer
+        price:
+          type: number
+        userID:
+          type: integer
+      example:
+        id: 1
+        price: 0.15
+        userID: 1
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        Name:
+          type: string
+      example:
+        id: 1
+        Name: 'André'
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+        Name:
+          type: string
+        price:
+          type: number
+      example:
+        id: 1
+        Name: Milch
+        price: 0.70
+    Purchase:
+      type: object
+      required:
+      - amount
+      properties:
+        id:
+          type: integer
+        amount:
+          type: number
+    
+      example:
+        id: 1
+        amount: 47.99
+security:
+  - basicAuth: []
