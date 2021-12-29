@@ -1,0 +1,17 @@
+using System;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+
+namespace server.Models
+{
+    public class Purchase
+    {   
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+        public User Purchaser { get; set; }
+        public decimal price { get; set; }
+        public DateTime TimeStamp { get; set; }
+    }
+}

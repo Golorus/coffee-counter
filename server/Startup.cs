@@ -10,7 +10,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using server.Models;
+using server.Repositories;
+using server.Services;
 
 namespace server
 {
@@ -18,7 +22,7 @@ namespace server
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = configuration;         
         }
 
         public IConfiguration Configuration { get; }
@@ -26,7 +30,13 @@ namespace server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.Configure<CoffeeListDatabaseSettings>(Configuration.GetSection(nameof(CoffeeListDatabaseSettings)));
+            services.AddSingleton<ICoffeeListDatabaseSettings>(x => x.GetRequiredService<IOptions<CoffeeListDatabaseSettings>>().Value);
+            services.AddSingleton<ICoffeesRepository,CoffeesRepository>();
+            services.AddSingleton<IUsersRepository,UsersRepository>();
+            services.AddSingleton<IPurchaseRepository,PurchaseRepository>();
+            services.AddScoped<PurchasesService>();
+            services.AddScoped<CoffeesService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
